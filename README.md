@@ -79,38 +79,82 @@ Beberapa observasi dari struktur dataset:
 
 Analisis variabel numerik menunjukkan distribusi dan statistik deskriptif dari variabel-variabel tersebut:
 
+```py
+df.hist(bins=20, figsize=(20, 15))
+plt.show()
+```
+
+![Hasil Analisis Numerikal](./img/numeric-distribution.png)
+
+- Jam Belajar: Kebanyakan siswa belajar antara 1 sampai 6 jam per hari
+- Penggunaan Media Sosial: Kebanyakan siswa menghabiskan antara 0 sampai 5 jam di media sosial setiap hari
+- Penggunaan Netflix: Kebanyakan siswa menonton Netflix selama 0 sampai 3 jam setiap hari
+- Persentase Kehadiran: Kebanyakan siswa memiliki kehadiran di atas 60%
+- Jam Tidur: Mayoritas siswa tidur antara 4 sampai 9 jam per hari
+- Nilai Ujian: Distribusi menunjukkan nilai berkisar dari sekitar 20 sampai 100, dengan rata-rata sekitar 69.6 dan simpangan baku 16.89
+
 **2. Analisis Variabel Kategorikal**
 
 Analisis variabel kategorikal menunjukkan perbedaan performa akademik berdasarkan berbagai kategori:
+
+```py
+fig, axes = plt.subplots(3, 2, figsize=(15, 10))
+for i, col in enumerate(categorical_cols):
+    ax = axes[i // 2, i % 2]
+    sns.countplot(data=df, x=col, ax=ax)
+    ax.set_title(f'Distribusi {col}')
+    ax.tick_params(axis='x', rotation=45)
+plt.tight_layout()
+plt.show()
+```
+
+![Hasil Analisis Kategorikal](./img/categorical-distribution.png)
+
+- Jenis Kelamin: Dataset memiliki lebih banyak siswa perempuan (481) daripada siswa laki-laki
+- Pekerjaan Paruh Waktu: Kebanyakan siswa (785) tidak memiliki pekerjaan paruh waktu
+- Kualitas Pola Makan: Kualitas pola makan yang paling umum adalah "Cukup" (437 siswa), diikuti oleh "Baik"
+- Tingkat Pendidikan Orang Tua: SMA adalah tingkat yang paling umum (483 siswa)
+- Kualitas Internet: Kebanyakan siswa memiliki kualitas internet "Baik" (447 siswa)
+- Partisipasi Ekstrakurikuler: Mayoritas siswa (682) tidak berpartisipasi dalam kegiatan ekstrakurikuler
 
 **3. Analisis Korelasi antara Variabel Numerik**
 
 Analisis korelasi antara variabel numerik menunjukkan beberapa insight penting:
 
-- Terdapat korelasi positif yang kuat antara jam belajar per hari (study_hours_per_day) dan nilai ujian (exam_score) dengan nilai korelasi 0.68
-- Terdapat korelasi positif moderat antara persentase kehadiran (attendance_percentage) dan nilai ujian (exam_score) dengan nilai korelasi 0.56
-- Terdapat korelasi negatif antara jam penggunaan media sosial (social_media_hours) dan nilai ujian (exam_score) dengan nilai korelasi -0.42
-- Terdapat korelasi negatif antara jam menonton Netflix (netflix_hours) dan nilai ujian (exam_score) dengan nilai korelasi -0.37
-
 ```py
-# Memilih hanya variabel numerik
 numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
 correlation = df[numeric_cols].corr()
 
-# Visualisasi heatmap korelasi
-
-plt.figure(figsize=(12, 8))
+plt.figure(figsize=(9, 6))
 sns.heatmap(correlation, annot=True, cmap='coolwarm', fmt='.2f')
-plt.title('Heatmap Korelasi Variabel Numerik')
+plt.title('Heatmap Korelasi Kolom Numerik')
 plt.tight_layout()
 plt.show()
 ```
 
-Berdasarkan hasil EDA, terdapat beberapa insight yang dapat digunakan untuk pemodelan:
+![Hasil Korelasi](./img/corr.png)
 
-- Variabel seperti jam belajar, persentase kehadiran, dan kualitas pola makan memiliki korelasi positif dengan nilai ujian
-- Variabel seperti penggunaan media sosial dan platform streaming memiliki korelasi negatif dengan nilai ujian
-- Faktor-faktor seperti partisipasi ekstrakurikuler dan tingkat pendidikan orang tua juga mempengaruhi performa akademik siswa
+- Korelasi positif kuat (0.83) antara jam belajar per hari dan nilai ujian
+- Korelasi negatif (-0.17) antara jam media sosial dan nilai ujian
+- Korelasi negatif (-0.17) antara jam Netflix dan nilai ujian
+- Korelasi positif (0.12) antara jam tidur dan nilai ujian
+- Korelasi positif (0.16) antara frekuensi olahraga dan nilai ujian
+- Korelasi positif moderat (0.32) antara tingkat kesehatan mental dan nilai ujian
+
+**4. Analisis antara Jam Belajar per Hari vs Nilai Ujian**
+
+```py
+plt.figure(figsize=(9, 6))
+sns.scatterplot(x='study_hours_per_day', y='exam_score', data=df)
+plt.title('Hubungan antara Jam Belajar per Hari dan Nilai Ujian')
+plt.xlabel('Jam Belajar per Hari')
+plt.ylabel('Nilai Ujian')
+plt.show()
+```
+
+![Hubungan antara Jam Belajar per Hari dan Nilai Ujian](./img/study-hours-vs-exam-score.png)
+
+Plot menunjukkan bahwa ada hubungan positif antara jam belajar per hari dan nilai ujian siswa. Siswa yang belajar lebih banyak cenderung memiliki nilai ujian yang lebih tinggi.
 
 ## Data Preparation
 
@@ -129,7 +173,6 @@ most_frequent = df['parental_education_level'].mode()[0]
 df['parental_education_level'].fillna(most_frequent, inplace=True)
 
 # Memastikan tidak ada missing values lagi
-print("Setelah imputasi:")
 print(df.isnull().sum())
 ```
 
@@ -163,7 +206,6 @@ df['diet_quality_encoded'] = df['diet_quality'].map(diet_mapping)
 Untuk memastikan semua fitur berada pada skala yang sama dan tidak didominasi oleh fitur dengan nilai yang besar, kita melakukan normalisasi pada fitur numerik.
 
 ```py
-# Normalisasi fitur numerik
 from sklearn.preprocessing import StandardScaler
 
 numeric_features = ['age', 'study_hours_per_day', 'social_media_hours', 'netflix_hours',
@@ -213,38 +255,21 @@ print(f"Jumlah sampel testing: {X_test.shape[0]}")
 
 Pembagian data dengan rasio 80% untuk training dan 20% untuk testing memungkinkan kita untuk melatih model pada sebagian besar data dan mengevaluasi performanya pada data yang belum pernah dilihat model sebelumnya.
 
-Teknik persiapan data di atas memastikan bahwa data dalam kondisi optimal untuk pemodelan machine learning, dengan fitur-fitur yang sudah dinormalisasi, dikodekan dengan tepat, dan tidak ada missing values.
+Teknik persiapan data di atas memastikan bahwa data dalam kondisi optimal untuk pemodelan machine learning, dengan fitur-fitur yang sudah dinormalisasi, diencoding dengan tepat, dan tidak ada missing values.
 
 ## Modeling
 
-Pada tahap ini, beberapa model machine learning diterapkan untuk memprediksi nilai ujian siswa berdasarkan kebiasaan dan karakteristik mereka. Tiga algoritma utama yang digunakan adalah Linear Regression, Random Forest Regressor, dan Gradient Boosting Regressor.
+Pada tahap ini, beberapa model machine learning diterapkan untuk memprediksi nilai ujian siswa berdasarkan kebiasaan dan karakteristik mereka. Tiga algoritma yang digunakan adalah Linear Regression, Random Forest Regressor, dan Gradient Boosting Regressor.
 
 ### 1. Linear Regression
 
-Linear Regression merupakan algoritma dasar yang digunakan sebagai baseline model untuk masalah regresi.
+Linear Regression merupakan algoritma dasar yang digunakan untuk masalah regresi.
 
 ```py
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-# Membuat dan melatih model Linear Regression
 lr_model = LinearRegression()
 lr_model.fit(X_train, y_train)
-
-# Prediksi pada data testing
-y_pred_lr = lr_model.predict(X_test)
-
-# Evaluasi model
-mae_lr = mean_absolute_error(y_test, y_pred_lr)
-mse_lr = mean_squared_error(y_test, y_pred_lr)
-rmse_lr = np.sqrt(mse_lr)
-r2_lr = r2_score(y_test, y_pred_lr)
-
-print("Linear Regression:")
-print(f"MAE: {mae_lr:.4f}")
-print(f"MSE: {mse_lr:.4f}")
-print(f"RMSE: {rmse_lr:.4f}")
-print(f"R²: {r2_lr:.4f}")
 ```
 
 Kelebihan Linear Regression:
@@ -266,24 +291,8 @@ Random Forest merupakan algoritma ensemble yang menggabungkan beberapa decision 
 ```py
 from sklearn.ensemble import RandomForestRegressor
 
-# Membuat dan melatih model Random Forest
-rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
+rf_model = RandomForestRegressor()
 rf_model.fit(X_train, y_train)
-
-# Prediksi pada data testing
-y_pred_rf = rf_model.predict(X_test)
-
-# Evaluasi model
-mae_rf = mean_absolute_error(y_test, y_pred_rf)
-mse_rf = mean_squared_error(y_test, y_pred_rf)
-rmse_rf = np.sqrt(mse_rf)
-r2_rf = r2_score(y_test, y_pred_rf)
-
-print("\nRandom Forest Regressor:")
-print(f"MAE: {mae_rf:.4f}")
-print(f"MSE: {mse_rf:.4f}")
-print(f"RMSE: {rmse_rf:.4f}")
-print(f"R²: {r2_rf:.4f}")
 ```
 
 Kelebihan Random Forest:
@@ -306,24 +315,8 @@ Gradient Boosting merupakan algoritma ensemble yang membangun model secara berta
 ```py
 from sklearn.ensemble import GradientBoostingRegressor
 
-# Membuat dan melatih model Gradient Boosting
-gb_model = GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, random_state=42)
+gb_model = GradientBoostingRegressor()
 gb_model.fit(X_train, y_train)
-
-# Prediksi pada data testing
-y_pred_gb = gb_model.predict(X_test)
-
-# Evaluasi model
-mae_gb = mean_absolute_error(y_test, y_pred_gb)
-mse_gb = mean_squared_error(y_test, y_pred_gb)
-rmse_gb = np.sqrt(mse_gb)
-r2_gb = r2_score(y_test, y_pred_gb)
-
-print("\nGradient Boosting Regressor:")
-print(f"MAE: {mae_gb:.4f}")
-print(f"MSE: {mse_gb:.4f}")
-print(f"RMSE: {rmse_gb:.4f}")
-print(f"R²: {r2_gb:.4f}")
 ```
 
 Kelebihan Gradient Boosting:
@@ -338,18 +331,6 @@ Kekurangan Gradient Boosting:
 - Risiko overfitting jika parameter tidak dikonfigurasi dengan tepat
 - Komputasi yang lebih intensif dibandingkan Random Forest
 - Sensitif terhadap hyperparameter seperti learning rate
-
-### Pemilihan Model Terbaik
-
-Berdasarkan evaluasi yang dilakukan, Random Forest Regressor dengan hyperparameter tuning dipilih sebagai model terbaik untuk prediksi nilai ujian siswa. Alasan pemilihan:
-
-1. Performa Superior: Model ini menunjukkan nilai MAE, MSE, dan RMSE yang lebih rendah serta R² yang lebih tinggi dibandingkan model lainnya, menunjukkan kemampuan prediksi yang lebih baik.
-2. Kemampuan Menangkap Pola Kompleks: Random Forest mampu menangkap hubungan non-linear antara kebiasaan siswa dan performa akademik mereka, yang mungkin tidak dapat ditangkap oleh model linear sederhana.
-3. Robustness: Model ini menunjukkan ketahanan terhadap overfitting, terutama setelah hyperparameter tuning yang tepat.
-4. Interpretabilitas: Meskipun tidak seinterpretable seperti Linear Regression, Random Forest masih menyediakan feature importance yang memungkinkan kita untuk memahami faktor-faktor yang paling berpengaruh terhadap performa akademik siswa.
-5. Stabilitas: Random Forest cenderung lebih stabil dalam berbagai skenario data dibandingkan dengan model yang lebih sensitif seperti Gradient Boosting.
-
-Melalui feature importance analysis dari model Random Forest, kita juga dapat mengidentifikasi bahwa variabel seperti jam belajar per hari, persentase kehadiran, dan kualitas tidur merupakan faktor-faktor yang paling berpengaruh terhadap nilai ujian siswa.
 
 ## Evaluation
 
@@ -371,8 +352,6 @@ $
 **Interpretasi:**  
 Nilai MAE yang lebih rendah menunjukkan performa model yang lebih baik.
 
----
-
 ### 2. Mean Squared Error (MSE)
 
 MSE mengukur rata-rata kuadrat error antara nilai prediksi dan nilai aktual. Metrik ini memberikan bobot lebih besar pada error yang besar karena error dikuadratkan.
@@ -385,8 +364,6 @@ $
 **Interpretasi:**  
 Nilai MSE yang lebih rendah menunjukkan performa model yang lebih baik.
 
----
-
 ### 3. Root Mean Squared Error (RMSE)
 
 RMSE adalah akar kuadrat dari MSE. Metrik ini memiliki unit yang sama dengan variabel target (misalnya, nilai ujian), sehingga lebih mudah diinterpretasikan.
@@ -398,8 +375,6 @@ $
 
 **Interpretasi:**  
 Nilai RMSE yang lebih rendah menunjukkan bahwa model memiliki error yang kecil dalam melakukan prediksi.
-
----
 
 ### 4. R² (R-squared)
 
@@ -419,3 +394,27 @@ $
 - $R^2 = 1$: Model memprediksi dengan sempurna
 - $R^2 = 0$: Model tidak lebih baik dari rata-rata
 - $R^2 < 0$: Model lebih buruk dari prediksi rata-rata
+
+### Pemilihan Model Terbaik
+
+Setelah menerapkan ketiga model (Linear Regression, Random Forest Regressor, dan Gradient Boosting Regressor), gambar berikut adalah hasil evaluasi masing-masing model:
+
+![Hasil Evaluasi Model](./img/model-comparison.png)
+
+| Model                     | MAE   | MSE   | RMSE  | R²    |
+|--------------------------|-------|-------|-------|-------|
+| Linear Regression        | 4.1  | 25.7  | 5.06  | 0.89 |
+| Random Forest Regressor | 4.65  | 30.95  | 5.56  | 0.87 |
+| Gradient Boosting Regressor | 4.82  | 36.92  | 6.07  | 0.85  |
+
+Berdasarkan hasil evaluasi, model Linear Regression menunjukkan performa terbaik dengan nilai MAE, MSE, dan RMSE terendah serta nilai R² tertinggi. Ini menunjukkan bahwa model ini mampu menjelaskan proporsi variansi dari nilai ujian siswa dengan baik.
+Model ini juga mampu menangkap pola kompleks dalam data dengan baik, sehingga dapat diandalkan untuk memprediksi performa akademik siswa berdasarkan kebiasaan dan karakteristik mereka.
+
+## Conclusion
+Proyek telah berhasil membangun model machine learning untuk memprediksi performa akademik siswa berdasarkan kebiasaan dan karakteristik mereka. Melalui analisis eksplorasi data (EDA), saya menemukan beberapa faktor yang memiliki pengaruh cukup signifikan terhadap nilai ujian siswa, seperti jam belajar dan persentase kehadiran.
+
+Saya juga menerapkan beberapa teknik preprocessing untuk menyiapkan data sebelum pemodelan, termasuk penanganan missing values, encoding variabel kategorikal, dan normalisasi fitur numerik.
+
+Model yang dibangun, yaitu Linear Regression, Random Forest Regressor, dan Gradient Boosting Regressor, dievaluasi menggunakan metrik MAE, MSE, RMSE, dan R². Hasil evaluasi menunjukkan bahwa model Linear Regression memiliki performa terbaik dengan nilai MAE, MSE, RMSE terendah dan R² tertinggi.
+
+Model ini dapat digunakan untuk memberikan wawasan kepada siswa, orang tua, dan institusi pendidikan tentang faktor-faktor yang mempengaruhi performa akademik siswa, serta membantu dalam pengambilan keputusan untuk meningkatkan hasil belajar.
