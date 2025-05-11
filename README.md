@@ -46,7 +46,7 @@ Performa solusi akan diukur menggunakan metrik evaluasi standar untuk masalah re
 
 ## Data Understanding
 
-Dataset Student Habits vs Academic Performance berisi informasi tentang berbagai kebiasaan dan karakteristik siswa serta performa akademik mereka yang diukur melalui nilai ujian. Dataset ini terdiri dari 1000 entri dengan 16 variabel yang mencakup berbagai aspek kehidupan dan kebiasaan siswa.
+Dataset Student Habits vs Academic Performance berisi informasi tentang berbagai kebiasaan dan karakteristik siswa serta performa akademik mereka yang diukur melalui nilai ujian. Dataset ini terdiri dari 1000 entri dengan 16 variabel yang mencakup berbagai aspek kehidupan dan kebiasaan siswa. Dataset yang digunakan dalam proyek ini diambil dari Kaggle dan dapat diakses melalui tautan berikut: [Student Habits vs Academic Performance](https://www.kaggle.com/datasets/jayaantanaath/student-habits-vs-academic-performance).
 
 ### Variabel-variabel pada dataset adalah sebagai berikut:
 
@@ -160,9 +160,17 @@ Plot menunjukkan bahwa ada hubungan positif antara jam belajar per hari dan nila
 
 Dalam tahap persiapan data, beberapa teknik preprocessing diterapkan untuk memastikan data dalam kondisi optimal untuk pemodelan machine learning:
 
-### 1. Penanganan Missing Values
+### 1. Menghapus Kolom `student_id`
 
-Pada dataset terdapat missing values pada variabel 'parental_education_level'. Untuk menangani hal ini, kita menggunakan teknik imputasi dengan modus (nilai yang paling sering muncul) karena variabel tersebut bersifat kategorikal.
+Kolom `student_id` dihapus karena tidak memberikan informasi yang relevan untuk analisis dan pemodelan.
+
+```py
+df.drop(columns=['student_id'], inplace=True)
+```
+
+### 2. Penanganan Missing Values
+
+Pada dataset terdapat 91 missing values pada variabel 'parental_education_level'. Untuk menangani hal ini, kita menggunakan teknik imputasi dengan modus (nilai yang paling sering muncul) karena variabel tersebut bersifat kategorikal.
 
 ```py
 # Mengecek missing values
@@ -178,7 +186,7 @@ print(df.isnull().sum())
 
 Imputasi dengan modus dipilih untuk mempertahankan distribusi data yang sudah ada tanpa memasukkan nilai baru yang mungkin tidak sesuai dengan pola data.
 
-### 2. Encoding Variabel Kategorikal
+### 3. Encoding Variabel Kategorikal
 
 Untuk dapat digunakan dalam model machine learning, variabel kategorikal perlu diubah menjadi bentuk numerik dengan teknik encoding.
 
@@ -201,9 +209,9 @@ diet_mapping = {'Poor': 0, 'Average': 1, 'Good': 2, 'Excellent': 3}
 df['diet_quality_encoded'] = df['diet_quality'].map(diet_mapping)
 ```
 
-### 3. Feature Scaling
+### 4. Feature Scaling
 
-Untuk memastikan semua fitur berada pada skala yang sama dan tidak didominasi oleh fitur dengan nilai yang besar, kita melakukan normalisasi pada fitur numerik.
+Untuk memastikan semua fitur berada pada skala yang sama dan tidak didominasi oleh fitur dengan nilai yang besar, kita melakukan normalisasi pada fitur numerik. Menggunakan StandardScaler agar fitur numerik berada pada skala yang sama.
 
 ```py
 from sklearn.preprocessing import StandardScaler
@@ -218,9 +226,9 @@ df_encoded[numeric_features] = scaler.fit_transform(df_encoded[numeric_features]
 
 Standarisasi fitur numerik penting karena beberapa algoritma seperti Regresi Linear dan SVM sensitif terhadap skala fitur. Dengan standarisasi, setiap fitur akan memiliki mean 0 dan standar deviasi 1.
 
-### 4. Feature Selection
+### 5. Feature Selection
 
-Untuk mengidentifikasi fitur-fitur yang paling berpengaruh, kita menggunakan metode pemilihan fitur seperti SelectKBest dengan metrik f_regression:
+Untuk mengidentifikasi fitur-fitur yang paling berpengaruh, kita menggunakan metode pemilihan fitur seperti SelectKBest dengan metrik f_regression, Menggunakan SelectKBest (f_regression) untuk memilih 10 fitur terbaik.
 
 ```py
 from sklearn.feature_selection import SelectKBest, f_regression
@@ -240,7 +248,7 @@ print("Fitur terpilih:", selected_features)
 
 Pemilihan fitur membantu mengurangi dimensionalitas data dan meningkatkan performa model dengan menghilangkan fitur yang kurang relevan. Ini juga membantu mengatasi potensi masalah overfitting.
 
-### 5. Train-Test Split
+### 6. Train-Test Split
 
 Sebelum membangun model, kita membagi dataset menjadi data training dan testing:
 
@@ -272,6 +280,11 @@ lr_model = LinearRegression()
 lr_model.fit(X_train, y_train)
 ```
 
+Model ini menggunakan parameter default (`fit_intercept=True, n_jobsint=None`).
+
+- `fit_intercept`: Jika True, model akan menghitung intercept (bias). Jika False, model mengasumsikan data sudah terpusat di nol.
+- `n_jobsint`: Jumlah pekerjaan yang digunakan untuk komputasi. Jika None, maka satu pekerjaan digunakan. Jika -1, semua core CPU digunakan.
+
 Kelebihan Linear Regression:
 
 - Interpretabilitas yang tinggi karena koefisien model dapat diinterpretasikan secara langsung
@@ -294,6 +307,12 @@ from sklearn.ensemble import RandomForestRegressor
 rf_model = RandomForestRegressor()
 rf_model.fit(X_train, y_train)
 ```
+
+Model ini menggunakan parameter default (`n_estimators=100, max_depth=None, random_state=None`).
+
+- `n_estimators`: Jumlah decision tree yang akan dibangun dalam hutan. Semakin banyak, semakin baik, tetapi juga semakin lambat.
+- `max_depth`: Kedalaman maksimum tiap pohon. Membatasi kompleksitas pohon untuk mencegah overfitting.
+- `random_state`: Seed untuk memastikan hasil yang konsisten setiap run.
 
 Kelebihan Random Forest:
 
@@ -318,6 +337,13 @@ from sklearn.ensemble import GradientBoostingRegressor
 gb_model = GradientBoostingRegressor()
 gb_model.fit(X_train, y_train)
 ```
+
+Model ini menggunakan parameter default (`n_estimators=100, learning_rate=0.1, max_depth=3, random_state=None`).
+
+- `n_estimators`: Jumlah boosting stages (jumlah pohon yang dibangun secara bertahap).
+- `learning_rate`: Seberapa besar kontribusi setiap pohon baru terhadap prediksi akhir. Nilai kecil membuat model belajar lebih lambat tapi bisa lebih akurat.
+- `max_depth`: Kedalaman maksimum tiap pohon.
+- `random_state`: Seed untuk reproducibility.
 
 Kelebihan Gradient Boosting:
 
@@ -418,3 +444,13 @@ Saya juga menerapkan beberapa teknik preprocessing untuk menyiapkan data sebelum
 Model yang dibangun, yaitu Linear Regression, Random Forest Regressor, dan Gradient Boosting Regressor, dievaluasi menggunakan metrik MAE, MSE, RMSE, dan R². Hasil evaluasi menunjukkan bahwa model Linear Regression memiliki performa terbaik dengan nilai MAE, MSE, RMSE terendah dan R² tertinggi.
 
 Model ini dapat digunakan untuk memberikan wawasan kepada siswa, orang tua, dan institusi pendidikan tentang faktor-faktor yang mempengaruhi performa akademik siswa, serta membantu dalam pengambilan keputusan untuk meningkatkan hasil belajar.
+
+### Keterkaitan dengan Business Understanding
+
+- Model mampu mengidentifikasi faktor kebiasaan yang paling berpengaruh terhadap nilai ujian (menjawab problem statement 1).
+- Pengaruh media sosial, Netflix, tidur, olahraga, dan kesehatan mental terhadap nilai ujian terkuantifikasi (menjawab problem statement 2 & 3).
+- Model prediksi memiliki akurasi tinggi (R²=0.89), sehingga dapat digunakan untuk memberikan rekomendasi berbasis data kepada siswa, orang tua, dan institusi pendidikan (menjawab goals & solution statements).
+  
+### Dampak solusi
+
+Model ini dapat membantu stakeholder pendidikan memahami dan mengintervensi kebiasaan siswa yang berdampak signifikan pada prestasi akademik.
