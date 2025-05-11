@@ -190,7 +190,7 @@ plt.show()
 
 # # Data Preparation
 
-# Pada tahap data preparation, tidak dilakukan penghilangan outlier dikarenakan data yang digunakan memang mewakili kasus nyata yang sangat bervariasi
+# Pada tahap data preparation, tidak dilakukan penghilangan outlier dikarenakan data yang digunakan memang mewakili kasus nyata yang sangat bervariasi, **karena proses menghapus kolom yang tidak perlu dan penanganan missing values sudah dilakukan pada tahap cleaning data**, maka langkah selanjutnya adalah melakukan encoding pada kolom kategorikal dan membagi dataset menjadi data latih dan data uji
 
 # In[21]:
 
@@ -221,6 +221,8 @@ df['diet_quality_encoded'] = df['diet_quality'].map(diet_mapping)
 
 df_encoded.head()
 
+
+# Menggunakan StandardScaler agar fitur numerik berada pada skala yang sama.
 
 # In[25]:
 
