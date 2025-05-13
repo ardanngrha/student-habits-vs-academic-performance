@@ -1,4 +1,4 @@
-![corr](https://github.com/user-attachments/assets/395d64d7-0dce-4e71-aa6b-8fa19641b5fc)# Laporan Proyek Machine Learning - Ardana Aldhizuma Nugraha
+# Laporan Proyek Machine Learning - Ardana Aldhizuma Nugraha
 
 ## Domain Proyek
 
