@@ -1,4 +1,4 @@
-# Laporan Proyek Machine Learning - Ardana Aldhizuma Nugraha
+![corr](https://github.com/user-attachments/assets/395d64d7-0dce-4e71-aa6b-8fa19641b5fc)# Laporan Proyek Machine Learning - Ardana Aldhizuma Nugraha
 
 ## Domain Proyek
 
@@ -84,7 +84,7 @@ df.hist(bins=20, figsize=(20, 15))
 plt.show()
 ```
 
-![Hasil Analisis Numerikal](https://github.com/ardanngrha/student-habits-vs-academic-performance/blob/main/img/numeric-distribution.png)
+![numeric-distribution](https://github.com/user-attachments/assets/5c651411-e872-484f-9219-9c0874209d6b)
 
 - Jam Belajar: Kebanyakan siswa belajar antara 1 sampai 6 jam per hari
 - Penggunaan Media Sosial: Kebanyakan siswa menghabiskan antara 0 sampai 5 jam di media sosial setiap hari
@@ -108,7 +108,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-![Hasil Analisis Kategorikal](https://github.com/ardanngrha/student-habits-vs-academic-performance/blob/main/img/categorical-distribution.png)
+![categorical-distribution](https://github.com/user-attachments/assets/f292b376-31b6-4948-a1b8-88e5e521de1b)
 
 - Jenis Kelamin: Dataset memiliki lebih banyak siswa perempuan (481) daripada siswa laki-laki
 - Pekerjaan Paruh Waktu: Kebanyakan siswa (785) tidak memiliki pekerjaan paruh waktu
@@ -132,7 +132,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-![Hasil Korelasi](https://github.com/ardanngrha/student-habits-vs-academic-performance/blob/main/img/corr.png)
+![corr](https://github.com/user-attachments/assets/e002fb1c-c238-4b8a-a54d-14b655ef832a)
 
 - Korelasi positif kuat (0.83) antara jam belajar per hari dan nilai ujian
 - Korelasi negatif (-0.17) antara jam media sosial dan nilai ujian
@@ -152,7 +152,7 @@ plt.ylabel('Nilai Ujian')
 plt.show()
 ```
 
-![Hubungan antara Jam Belajar per Hari dan Nilai Ujian](https://github.com/ardanngrha/student-habits-vs-academic-performance/blob/main/img/study-hours-vs-exam-score.png)
+![study-hours-vs-exam-score](https://github.com/user-attachments/assets/7ea51e30-0c66-4ea1-8ce9-6b3566ae77d5)
 
 Plot menunjukkan bahwa ada hubungan positif antara jam belajar per hari dan nilai ujian siswa. Siswa yang belajar lebih banyak cenderung memiliki nilai ujian yang lebih tinggi.
 
@@ -425,7 +425,7 @@ $
 
 Setelah menerapkan ketiga model (Linear Regression, Random Forest Regressor, dan Gradient Boosting Regressor), gambar berikut adalah hasil evaluasi masing-masing model:
 
-![Hasil Evaluasi Model](https://github.com/ardanngrha/student-habits-vs-academic-performance/blob/main/img/model-comparison.png)
+![model-comparison](https://github.com/user-attachments/assets/3cc41d7d-ecf7-4022-a4c4-631c5a13f20b)
 
 | Model                     | MAE   | MSE   | RMSE  | R²    |
 |--------------------------|-------|-------|-------|-------|
