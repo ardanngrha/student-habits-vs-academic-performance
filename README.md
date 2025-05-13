@@ -84,7 +84,7 @@ df.hist(bins=20, figsize=(20, 15))
 plt.show()
 ```
 
-![Hasil Analisis Numerikal](./img/numeric-distribution.png)
+![Hasil Analisis Numerikal](https://github.com/ardanngrha/student-habits-vs-academic-performance/blob/main/img/numeric-distribution.png)
 
 - Jam Belajar: Kebanyakan siswa belajar antara 1 sampai 6 jam per hari
 - Penggunaan Media Sosial: Kebanyakan siswa menghabiskan antara 0 sampai 5 jam di media sosial setiap hari
@@ -108,7 +108,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-![Hasil Analisis Kategorikal](./img/categorical-distribution.png)
+![Hasil Analisis Kategorikal](https://github.com/ardanngrha/student-habits-vs-academic-performance/blob/main/img/categorical-distribution.png)
 
 - Jenis Kelamin: Dataset memiliki lebih banyak siswa perempuan (481) daripada siswa laki-laki
 - Pekerjaan Paruh Waktu: Kebanyakan siswa (785) tidak memiliki pekerjaan paruh waktu
@@ -132,7 +132,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-![Hasil Korelasi](./img/corr.png)
+![Hasil Korelasi](https://github.com/ardanngrha/student-habits-vs-academic-performance/blob/main/img/corr.png)
 
 - Korelasi positif kuat (0.83) antara jam belajar per hari dan nilai ujian
 - Korelasi negatif (-0.17) antara jam media sosial dan nilai ujian
@@ -152,7 +152,7 @@ plt.ylabel('Nilai Ujian')
 plt.show()
 ```
 
-![Hubungan antara Jam Belajar per Hari dan Nilai Ujian](./img/study-hours-vs-exam-score.png)
+![Hubungan antara Jam Belajar per Hari dan Nilai Ujian](https://github.com/ardanngrha/student-habits-vs-academic-performance/blob/main/img/study-hours-vs-exam-score.png)
 
 Plot menunjukkan bahwa ada hubungan positif antara jam belajar per hari dan nilai ujian siswa. Siswa yang belajar lebih banyak cenderung memiliki nilai ujian yang lebih tinggi.
 
@@ -425,7 +425,7 @@ $
 
 Setelah menerapkan ketiga model (Linear Regression, Random Forest Regressor, dan Gradient Boosting Regressor), gambar berikut adalah hasil evaluasi masing-masing model:
 
-![Hasil Evaluasi Model](./img/model-comparison.png)
+![Hasil Evaluasi Model](https://github.com/ardanngrha/student-habits-vs-academic-performance/blob/main/img/model-comparison.png)
 
 | Model                     | MAE   | MSE   | RMSE  | R²    |
 |--------------------------|-------|-------|-------|-------|
